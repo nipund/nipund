@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/normalize.css">
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+  <style type="text/css">
+  #canvas {
+
+  }
+  #out {
+    font-size: 5px;
+    font-family: monospace;
+    line-height: 0.9em;
+    display: block;
+  }
+  #background {
+    display: none;
+  }
+  #ballon {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    cursor: move;
+  }
+
+  </style>
+
+  <title>HTML5 Canvas Example by Nipun</title>
+
+  <script type='text/javascript'>//<![CDATA[
+    $(window).load(function(){
+      $(document).ready(function() {
+        var d_canvas = document.getElementById('canvas');
+        var context = d_canvas.getContext('2d');
+        var background = document.getElementById('background');
+        var ballon = document.getElementById('ballon')
+        context.drawImage(background, 0, 0);
+
+        $('#ballon').draggable();
+
+        $('#draw').click(function() {
+          var $ballon = $('#ballon'),
+          $canvas = $('#canvas');
+          var ballon_x = $ballon.offset().left - $canvas.offset().left,
+          ballon_y = $ballon.offset().top - $canvas.offset().top;
+
+          context.drawImage(ballon, ballon_x, ballon_y);
+
+          $ballon.hide();
+          $(this).attr('disabled', 'disabled');
+
+          var str = "";
+          var block_h = 5;
+          var block_w = 3;
+          for(i = 0; i < context.canvas.height; i+=block_h) {
+            for(j = 0; j < context.canvas.width; j+=block_w) {
+              var myImageData = context.getImageData(j, i, block_w, block_h);
+              var sum = 0;
+              for(k = 0; k < myImageData.data.length; k++) {
+                if((k+1) % 4 != 0) {
+                  sum += myImageData.data[k];
+                }
+              }
+              var g = sum/(k+1);
+              //console.log(average);
+              if (g >= 230.0) {
+                block = ' ';
+              } else if (g >= 200.0) {
+                block = '-';
+              } else if (g >= 180.0) {
+                block = '*';
+              } else if (g >= 160.0) {
+                block = ':';
+              } else if (g >= 130.0) {
+                block = 'o';
+              } else if (g >= 100.0) {
+                block = '&';
+              } else if (g >= 70.0) {
+                block = '8';
+              } else if (g >= 50.0) {
+                block = '#';
+              } else {
+                block = '@';
+              }
+              str += block;
+              //str += " ";
+            }
+            str += "<br>";
+          }
+          $('#out').html(str);
+
+        });
+
+      });
+    });//]]>
+
+    </script>
+
+
+  </head>
+
+  <body>
+    <h1>Drag the balloon somewhere, then click "Draw in ASCII"</h1>
+
+    <canvas id="canvas" width="500" height="325"></canvas>
+
+    <img src="assets/PWSOy.jpg" id="background" />
+    <img src="assets/6l6v2.png" id="ballon" />
+
+    <button id="draw">Draw in ASCII</button>
+    <p>&nbsp;</p>
+    <prea><span id="out"></span></prea>
+
+
+  </body>
+
+  </html>
